@@ -366,12 +366,12 @@
                 wavFile: "02_restroom.wav", nightPriority: true
             },
             {
-                id: 7,
-                labelEnglish: "WARM / FAN", labelTagalog: "MAINIT", labelBikol: "MAINIT",
-                phraseEnglish: "It feels warm, please turn on the electric fan.",
-                phraseTagalog: "Mainit po dito, paki-buksan po ang electric fan.",
-                phraseBikol: "Mainit tabi digdi, paki-bukas tabi kan electric fan.",
-                wavFile: "07_fan.wav", nightPriority: false
+                id: 8,
+                labelEnglish: "SIT UP", labelTagalog: "UMUPO", labelBikol: "MAGTUKAW",
+                phraseEnglish: "I would like to sit up or watch TV.",
+                phraseTagalog: "Gusto ko pong umupo o manood ng TV.",
+                phraseBikol: "Gusto ko tabing magtukaw o magdalan nin TV.",
+                wavFile: "08_situp.wav", nightPriority: false
             },
             {
                 id: 1,
@@ -382,28 +382,20 @@
                 wavFile: "01_water.wav", nightPriority: true
             },
             {
+                id: 5,
+                labelEnglish: "FOOD", labelTagalog: "PAGKAIN", labelBikol: "KAKANON",
+                phraseEnglish: "I am hungry, I would like to eat.",
+                phraseTagalog: "Nagugutom na po ako, gusto ko na pong kumain.",
+                phraseBikol: "Nagugutom na tabi ako, gusto ko nang magkakan.",
+                wavFile: "05_food.wav", nightPriority: false
+            },
+            {
                 id: 6,
                 labelEnglish: "MEDICINE", labelTagalog: "GAMOT", labelBikol: "BULONG",
                 phraseEnglish: "It is time for my medicine.",
                 phraseTagalog: "Oras na po para sa aking gamot.",
                 phraseBikol: "Oras na tabi para sa sakuyang bulong.",
                 wavFile: "06_medicine.wav", nightPriority: true
-            },
-            {
-                id: 3,
-                labelEnglish: "POSITION", labelTagalog: "AYOS HIGA", labelBikol: "IHIRING",
-                phraseEnglish: "My back hurts, please adjust my lying position.",
-                phraseTagalog: "Masakit po ang likod ko, paki-ayos po ng higa ko.",
-                phraseBikol: "Makulog tabi ang likod ko, paki-hiring tabi ako.",
-                wavFile: "03_position.wav", nightPriority: true
-            },
-            {
-                id: 8,
-                labelEnglish: "SIT UP", labelTagalog: "UMUPO", labelBikol: "MAGTUKAW",
-                phraseEnglish: "I would like to sit up or watch TV.",
-                phraseTagalog: "Gusto ko pong umupo o manood ng TV.",
-                phraseBikol: "Gusto ko tabing magtukaw o magdalan nin TV.",
-                wavFile: "08_situp.wav", nightPriority: false
             },
             {
                 id: 9,
@@ -414,12 +406,20 @@
                 wavFile: "09_blanket.wav", nightPriority: false
             },
             {
-                id: 5,
-                labelEnglish: "FOOD", labelTagalog: "PAGKAIN", labelBikol: "KAKANON",
-                phraseEnglish: "I am hungry, I would like to eat.",
-                phraseTagalog: "Nagugutom na po ako, gusto ko na pong kumain.",
-                phraseBikol: "Nagugutom na tabi ako, gusto ko nang magkakan.",
-                wavFile: "05_food.wav", nightPriority: false
+                id: 3,
+                labelEnglish: "POSITION", labelTagalog: "AYOS HIGA", labelBikol: "IHIRING",
+                phraseEnglish: "My back hurts, please adjust my lying position.",
+                phraseTagalog: "Masakit po ang likod ko, paki-ayos po ng higa ko.",
+                phraseBikol: "Makulog tabi ang likod ko, paki-hiring tabi ako.",
+                wavFile: "03_position.wav", nightPriority: true
+            },
+            {
+                id: 7,
+                labelEnglish: "WARM / FAN", labelTagalog: "MAINIT", labelBikol: "MAINIT",
+                phraseEnglish: "It feels warm, please turn on the electric fan.",
+                phraseTagalog: "Mainit po dito, paki-buksan po ang electric fan.",
+                phraseBikol: "Mainit tabi digdi, paki-bukas tabi kan electric fan.",
+                wavFile: "07_fan.wav", nightPriority: false
             }
         ];
 
@@ -460,19 +460,19 @@
                     return `<polyline points="30,42 42,42 46,28 52,52 56,38 70,38" />`;
                 case 2: // Toilet
                     return `<rect x="42" y="28" width="16" height="8" rx="2" /><path d="M 40 38 H 60 V 46 C 60 52, 40 52, 40 46 Z" />`;
-                case 7: // Lightning Bolt
+                case 8: // Lightning Bolt
                     return `<polygon points="52,24 38,40 48,40 44,56 62,36 50,36" />`;
                 case 1: // Cup/Glass
                     return `<path d="M 40 28 H 60 L 57 50 C 57 53, 43 53, 43 50 Z" /><line x1="38" y1="28" x2="62" y2="28" />`;
-                case 6: // Circle/Disc
+                case 5: // Circle/Disc
                     return `<circle cx="50" cy="38" r="11" />`;
-                case 3: // Pill/Capsule
+                case 6: // Pill/Capsule
                     return `<rect x="38" y="30" width="24" height="16" rx="8" /><line x1="50" y1="30" x2="50" y2="46" />`;
-                case 8: // Snowflake
+                case 9: // Snowflake
                     return `<line x1="50" y1="26" x2="50" y2="50" /><line x1="38" y1="32" x2="62" y2="44" /><line x1="38" y1="44" x2="62" y2="32" />`;
-                case 9: // Location Pin
+                case 3: // Location Pin
                     return `<path d="M 50 25 C 42 25, 38 31, 38 37 C 38 46, 50 55, 50 55 C 50 55, 62 46, 62 37 C 62 31, 58 25, 50 25 Z" /><circle cx="50" cy="36" r="3.5" />`;
-                case 5: // Flame
+                case 7: // Flame
                     return `<path d="M 50 24 C 50 24, 38 36, 38 43 C 38 50, 43 54, 50 54 C 57 54, 62 50, 62 43 C 62 36, 50 24, 50 24 Z" />`;
                 default:
                     return '';
