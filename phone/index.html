@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#050817">
+  <title>VocalTouch</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="audio-indicator.css">
+  <link rel="stylesheet" href="dashboard-settings.css">
+  <link rel="stylesheet" href="confirm-dialog.css">
+</head>
+<body>
+  <main class="console">
+    <header>
+      <div>
+        <h1>VocalTouch</h1>
+        <p>Shared by: Primary Caregiver (Upstairs) • Daughter • Son (CCTV)</p>
+        <p class="link-status" id="linkStatus" data-state="offline" role="status">No connection, retrying…</p>
+      </div>
+      <button class="settings-button" id="settingsButton" type="button" aria-haspopup="dialog" aria-controls="settingsDialog" aria-label="Open settings">
+        <span aria-hidden="true">⚙</span>
+        <span>Settings</span>
+      </button>
+    </header>
+
+    <section class="live-status" aria-live="polite">
+      <div class="mic">♬</div>
+      <div>
+        <strong id="liveTitle">/sdcard/engr1sh/ic1a_ready.wav</strong>
+        <span id="liveText"></span>
+        <small id="voiceNotice" aria-live="polite">Speech uses voices installed on this device.</small>
+        <div class="audio-indicator" id="audioIndicator" role="img" aria-label="Speaker idle">
+          <span></span><span></span><span></span><span></span><span></span><span></span>
+          <span></span><span></span><span></span><span></span><span></span><span></span>
+          <span></span><span></span><span></span><span></span><span></span><span></span>
+        </div>
+      </div>
+    </section>
+
+    <nav class="tabs" aria-label="Requests">
+      <button class="tab active" id="pendingTab">PENDING DASHBOARD (0)</button>
+      <button class="tab" id="historyTab">ASSISTED HISTORY (0)</button>
+    </nav>
+
+    <section class="dashboard" id="dashboard">
+      <div class="empty-state">
+        <div class="check">✓</div>
+        <h2 id="emptyTitle">All Caught Up</h2>
+        <p id="emptyCopy">Requests are clean for now,<br>look out for new assists!</p>
+        <small id="emptyNote">Family members &amp; caregiver speaker are synced.</small>
+      </div>
+    </section>
+
+    </main>
+    <dialog class="settings-dialog" id="settingsDialog" aria-labelledby="settingsTitle">
+      <form method="dialog">
+        <div class="settings-heading">
+          <div>
+            <span class="settings-kicker">PREFERENCES</span>
+            <h2 id="settingsTitle">Settings</h2>
+          </div>
+          <button class="settings-close" type="submit" value="close" aria-label="Close settings">×</button>
+      </div>
+        <section class="setting-item" aria-labelledby="voiceSettingLabel">
+          <div class="setting-copy">
+            <strong id="voiceSettingLabel">Voice</strong>
+            <small>Choose the language used for spoken requests.</small>
+          </div>
+          <button class="setting-action voice-setting" id="voiceButton" type="button">VOICE: ENGLISH</button>
+        </section>
+        <section class="setting-item" aria-labelledby="bluetoothSettingLabel">
+          <div class="setting-copy">
+            <strong id="bluetoothSettingLabel">Bluetooth</strong>
+            <small>Speaker connection status, as reported by the tablet.</small>
+          </div>
+          <span class="setting-action bluetooth-setting" id="speakerButton" data-state="unknown" role="status">BT SPEAKER: WAITING FOR TABLET</span>
+        </section>
+        <section class="setting-item volume-setting" aria-labelledby="volumeSettingLabel">
+          <div class="setting-copy">
+            <strong id="volumeSettingLabel">Volume <span id="volumeValue">85%</span></strong>
+            <small>Adjust spoken request volume.</small>
+          </div>
+          <input id="volume" type="range" min="0" max="100" value="85" aria-label="Volume">
+        </section>
+      </form>
+    </dialog>
+    <dialog class="confirm-dialog" id="clearHistoryDialog" aria-labelledby="clearHistoryTitle" aria-describedby="clearHistoryMessage">
+    <form method="dialog" id="clearHistoryForm">
+      <div class="confirm-icon" aria-hidden="true">!</div>
+      <h2 id="clearHistoryTitle">Clear assisted history?</h2>
+      <p id="clearHistoryMessage">This will permanently remove all assisted records.</p>
+      <div class="confirm-actions">
+        <button class="confirm-cancel" type="submit" value="cancel">Cancel</button>
+        <button class="confirm-delete" type="submit" value="delete">Clear All</button>
+      </div>
+    </form>
+  </dialog>
+  <script src="https://cdn.jsdelivr.net/npm/mqtt@5.10.1/dist/mqtt.min.js"></script>
+  <script src="../link.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>

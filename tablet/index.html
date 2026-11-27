@@ -1,0 +1,929 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#181A1E">
+    <title>VocalTouch Tablet</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            user-select: none;
+            -webkit-user-select: none;
+            -webkit-touch-callout: none;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #181A1E;
+            background-image: 
+                linear-gradient(to right, #202328 1px, transparent 1px),
+                linear-gradient(to bottom, #202328 1px, transparent 1px);
+            background-size: 36px 36px;
+            color: #ffffff;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            overflow: hidden;
+            touch-action: manipulation;
+        }
+
+
+        .enclosure-outer {
+            background: linear-gradient(135deg, #AEB1B6 0%, #787B80 100%);
+            border: 2.2px solid #56595E;
+            border-radius: 42px;
+            padding: 11px;
+            box-shadow: 
+                6px 10px 24px rgba(0, 0, 0, 0.55),
+                2px 4px 8px rgba(0, 0, 0, 0.35);
+            position: relative;
+            transition: all 0.25s ease;
+        }
+
+        .enclosure-deck {
+            background: linear-gradient(135deg, #A4A7AC 0%, #888B90 100%);
+            border: 1.2px solid #66696E;
+            border-radius: 30px;
+            padding: 0 15px 15px 15px;
+            display: flex;
+            flex-direction: column;
+            align-items: stretch;
+        }
+
+        .top-bezel-strip {
+            height: 54px;
+            min-height: 54px;
+            width: 100%;
+            display: flex;
+            flex-direction: row;
+            justify-content: flex-start;
+            align-items: center;
+            padding-left: 26px;
+            padding-right: 26px;
+            position: relative;
+        }
+
+        .bt-led-socket {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background-color: #3A3E42;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .bt-led-dome {
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background-color: #48CA5C;
+            position: relative;
+            transition: background-color 0.15s ease, box-shadow 0.15s ease;
+            box-shadow: 0 0 16px 6px rgba(72, 202, 92, 0.75);
+        }
+
+        .bt-led-dome::after {
+            content: '';
+            position: absolute;
+            top: 3px;
+            left: 4px;
+            width: 4px;
+            height: 4px;
+            border-radius: 50%;
+            background-color: rgba(255, 255, 255, 0.8);
+        }
+
+        .bt-led-dome.bt-dropped {
+            background-color: #F0AF32;
+            box-shadow: 0 0 16px 5px rgba(240, 175, 50, 0.7);
+        }
+
+        .bt-led-dome.bt-blink-off {
+            background-color: #555042;
+            box-shadow: none;
+        }
+
+        .switch-cavity-outer {
+            flex: 1;
+            background-color: #32353A;
+            border: 1.8px solid #565A60;
+            border-radius: 16px;
+            padding: 4px;
+        }
+
+        .switch-cavity-inner {
+            background-color: #222428;
+            border-radius: 12px;
+            padding: 12px;
+            width: 100%;
+            height: 100%;
+        }
+
+        .keycap-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            grid-template-rows: repeat(2, 1fr);
+            gap: 12px;
+        }
+
+        .keycap-cell {
+            aspect-ratio: 1 / 1;
+            position: relative;
+            cursor: pointer;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .switch-housing-base {
+            position: absolute;
+            bottom: 0px;
+            left: 19%;
+            width: 62%;
+            height: 16%;
+            background-color: #8E9198;
+            border: 1px solid #484B50;
+            border-radius: 4px;
+            z-index: 1;
+        }
+
+        .keycap-3d-wrap {
+            position: absolute;
+            top: 1px;
+            left: 3px;
+            right: 3px;
+            bottom: 5px;
+            z-index: 2;
+            transition: transform 0.06s ease;
+        }
+
+        .keycap-cell.pressed .keycap-3d-wrap {
+            transform: translateY(3px);
+        }
+
+
+        html, body { height: 100%; }
+        body { display: block; }
+
+        .stage {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 56px 16px 16px;
+            overflow: auto;
+        }
+
+        #hardware-enclosure { width: 100%; max-width: 1120px; }
+        .keycap-svg { width: 100%; height: 100%; overflow: visible; }
+
+        /* ---- Presenter HUD (outside the device): link status + demo controls ---- */
+        .hud {
+            position: fixed;
+            top: 10px;
+            right: 14px;
+            z-index: 50;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 4px 5px 4px 12px;
+            background: rgba(20, 24, 33, 0.92);
+            backdrop-filter: blur(6px);
+            -webkit-backdrop-filter: blur(6px);
+            border: 1px solid #2A3242;
+            border-radius: 999px;
+            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.4);
+            font-size: 11px;
+            font-weight: 700;
+            color: #A0AEC0;
+        }
+        .hud-dot { width: 8px; height: 8px; border-radius: 50%; background: #64748B; }
+        .hud[data-state="linked"] .hud-dot { background: #00E699; box-shadow: 0 0 8px #00E699; }
+        .hud[data-state="linked"] .hud-text { color: #00E699; }
+        .hud[data-state="waiting"] .hud-dot { background: #F5BE46; box-shadow: 0 0 8px #F5BE46; }
+        .hud[data-state="waiting"] .hud-text { color: #F5BE46; }
+        .hud[data-state="offline"] .hud-dot { background: #EF4444; }
+        .hud[data-state="offline"] .hud-text { color: #F87171; }
+
+        .hud-btn {
+            padding: 5px 11px;
+            border: 0;
+            border-radius: 999px;
+            background: #1E2430;
+            color: #CBD5E1;
+            font: inherit;
+            cursor: pointer;
+        }
+        .hud-btn[aria-expanded="true"] { background: #00D287; color: #0A0E14; }
+
+        .demo-panel {
+            position: fixed;
+            left: 50%;
+            bottom: 14px;
+            transform: translateX(-50%);
+            z-index: 50;
+            display: none;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 8px;
+            width: max-content;
+            max-width: calc(100% - 24px);
+            padding: 10px;
+            background: rgba(20, 24, 33, 0.96);
+            border: 1px solid #2A3242;
+            border-radius: 14px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        }
+        .demo-panel.open { display: flex; }
+
+        .demo-btn {
+            padding: 8px 12px;
+            background: #1E2430;
+            border: 1px solid #3B82F6;
+            border-radius: 8px;
+            color: #58BEFA;
+            font: inherit;
+            font-size: 11px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+        .demo-btn:active { transform: scale(0.96); }
+        .demo-btn.night { border-color: #FAC346; color: #FAC346; }
+        .demo-btn.error { border-color: #6E2D2D; color: #F55F5A; }
+        .demo-btn.bt { border-color: #5FE191; color: #5FE191; }
+        .demo-btn.test { border-color: #B98CFF; color: #B98CFF; }
+
+        .demo-volume {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 10px;
+            background: #1E2430;
+            border: 1px solid #374152;
+            border-radius: 8px;
+            font-size: 11px;
+            font-weight: 700;
+            white-space: nowrap;
+        }
+        .demo-volume input { width: 110px; accent-color: #00E699; cursor: pointer; }
+    
+    </style>
+</head>
+<body>
+
+    <!-- Presenter HUD: shows whether the caregiver phone is linked, and opens the demo controls -->
+    <div class="hud" id="hud" data-state="offline">
+        <span class="hud-dot"></span>
+        <span class="hud-text" id="hud-text">Connecting…</span>
+        <button class="hud-btn" id="demo-toggle" type="button" aria-expanded="false" aria-controls="demo-panel" onclick="toggleDemoPanel()">Demo</button>
+    </div>
+
+    <div class="demo-panel" id="demo-panel">
+        <button id="ctrl-lang-btn" class="demo-btn" type="button" onclick="cycleLanguage()">Voice: ENGLISH</button>
+        <button id="ctrl-night-btn" class="demo-btn night" type="button" onclick="toggleNightMode()">Mode: DAY (7AM-7PM)</button>
+        <button id="ctrl-error-btn" class="demo-btn error" type="button" onclick="toggleRedErrorState()">Red Error State: OFF</button>
+        <button id="ctrl-bt-btn" class="demo-btn bt" type="button" onclick="toggleBluetoothLink()">BT Speaker: Connected</button>
+        <div class="demo-volume">
+            <span id="vol-label">Vol 85%</span>
+            <input id="vol-slider" type="range" min="0" max="100" value="85" oninput="updateVolume(this.value)" aria-label="Speaker volume">
+        </div>
+        <button class="demo-btn test" type="button" onclick="testPressKey6()">Test Press Key #6</button>
+        <button id="ctrl-3d-btn" class="demo-btn" style="border-color: #C084FC; color: #E9D5FF;" type="button" onclick="toggle3DView()">3D CAD Model: OFF</button>
+    </div>
+
+    <!-- VOCALTOUCH BOARD (device simulation). Top bezel: tap the green LED to toggle the Bluetooth speaker link. -->
+    <div class="stage">
+        <div id="hardware-enclosure" class="enclosure-outer">
+            <div class="enclosure-deck">
+
+                <div class="top-bezel-strip">
+                    <div class="bt-led-socket" onclick="toggleBluetoothLink()" title="Tap to connect / disconnect the Bluetooth speaker">
+                        <div id="bezel-bt-led" class="bt-led-dome"></div>
+                    </div>
+                </div>
+
+                <div class="switch-cavity-outer">
+                    <div class="switch-cavity-inner" style="position: relative; overflow: hidden; min-height: 420px;">
+                        <div id="square-keycap-grid" class="keycap-grid">
+                            <!-- 10 square 3D keycaps injected via JS -->
+                        </div>
+                        <div id="cad-viewer-container" style="display: none; width: 100%; height: 100%; position: absolute; top: 0; left: 0; padding: 12px; z-index: 10;">
+                            <model-viewer src="../../assets/model.glb" alt="VocalTouch 3D CAD Prototype" auto-rotate camera-controls shadow-intensity="1.5" exposure="1.2" environment-image="neutral" style="width: 100%; height: 100%; background: #1a1c23; border-radius: 8px;"></model-viewer>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.5.0/model-viewer.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/mqtt@5.10.1/dist/mqtt.min.js"></script>
+    <script src="../link.js"></script>
+    <script>
+        // =====================================================================
+        // STATE & TRILINGUAL VOCABULARY
+        // =====================================================================
+        let powerOn = true;
+        let isNightMode = false;      // Day: 7:00 AM - 7:59 PM | Night: 8:00 PM - 6:59 AM
+        let currentLangIndex = 0;     // 0 = English, 1 = Tagalog, 2 = Bikolano (Daet/Talisay)
+        let systemErrorState = false; // All 10 keycaps turn RED
+        let btConnected = true;       // Bluetooth speaker <-> this tablet
+        let btReconnectCountdown = 0; // 50 ticks = 5.0s
+        let volumePercent = 85;
+
+        let activeGreenKeyIndex = -1;
+        let pressStartTime = 0;
+        let lastDebounceTime = 0;
+
+        let audioCtx = null;
+
+        const keys = [
+            {
+                id: 1,
+                labelEnglish: "WATER", labelTagalog: "TUBIG", labelBikol: "TUBIG",
+                phraseEnglish: "I am thirsty, please give me water.",
+                phraseTagalog: "Nauuhaw po ako, pahingi po ng tubig.",
+                phraseBikol: "Napapaha tabi ako, mahagad tabi nin tubig.",
+                wavFile: "01_water.wav", nightPriority: true
+            },
+            {
+                id: 2,
+                labelEnglish: "RESTROOM", labelTagalog: "CR / BANYO", labelBikol: "CR / BANYO",
+                phraseEnglish: "I need to use the restroom.",
+                phraseTagalog: "Kailangan ko pong gumamit ng banyo (CR).",
+                phraseBikol: "Kaipuhan ko tabing maggamit nin banyo (CR).",
+                wavFile: "02_restroom.wav", nightPriority: true
+            },
+            {
+                id: 3,
+                labelEnglish: "POSITION", labelTagalog: "AYOS HIGA", labelBikol: "IHIRING",
+                phraseEnglish: "My back hurts, please adjust my lying position.",
+                phraseTagalog: "Masakit po ang likod ko, paki-ayos po ng higa ko.",
+                phraseBikol: "Makulog tabi ang likod ko, paki-hiring tabi ako.",
+                wavFile: "03_position.wav", nightPriority: true
+            },
+            {
+                id: 4,
+                labelEnglish: "PAIN", labelTagalog: "MASAKIT", labelBikol: "MAKULOG",
+                phraseEnglish: "Something hurts or I feel dizzy.",
+                phraseTagalog: "Masakit po ang ulo o katawan ko, nahihilo po ako.",
+                phraseBikol: "Makulog tabi ang payo o lawas ko, nalulula ako.",
+                wavFile: "04_pain.wav", nightPriority: true
+            },
+            {
+                id: 5,
+                labelEnglish: "FOOD", labelTagalog: "PAGKAIN", labelBikol: "KAKANON",
+                phraseEnglish: "I am hungry, I would like to eat.",
+                phraseTagalog: "Nagugutom na po ako, gusto ko na pong kumain.",
+                phraseBikol: "Nagugutom na tabi ako, gusto ko nang magkakan.",
+                wavFile: "05_food.wav", nightPriority: false
+            },
+            {
+                id: 6,
+                labelEnglish: "MEDICINE", labelTagalog: "GAMOT", labelBikol: "BULONG",
+                phraseEnglish: "It is time for my medicine.",
+                phraseTagalog: "Oras na po para sa aking gamot.",
+                phraseBikol: "Oras na tabi para sa sakuyang bulong.",
+                wavFile: "06_medicine.wav", nightPriority: true
+            },
+            {
+                id: 7,
+                labelEnglish: "WARM / FAN", labelTagalog: "MAINIT", labelBikol: "MAINIT",
+                phraseEnglish: "It feels warm, please turn on the electric fan.",
+                phraseTagalog: "Mainit po dito, paki-buksan po ang electric fan.",
+                phraseBikol: "Mainit tabi digdi, paki-bukas tabi kan electric fan.",
+                wavFile: "07_fan.wav", nightPriority: false
+            },
+            {
+                id: 8,
+                labelEnglish: "SIT UP", labelTagalog: "UMUPO", labelBikol: "MAGTUKAW",
+                phraseEnglish: "I would like to sit up or watch TV.",
+                phraseTagalog: "Gusto ko pong umupo o manood ng TV.",
+                phraseBikol: "Gusto ko tabing magtukaw o magdalan nin TV.",
+                wavFile: "08_situp.wav", nightPriority: false
+            },
+            {
+                id: 9,
+                labelEnglish: "BLANKET", labelTagalog: "KUMOT", labelBikol: "TAMONG",
+                phraseEnglish: "I feel cold, please give me a blanket.",
+                phraseTagalog: "Nilalamig po ako, pahingi po ng kumot.",
+                phraseBikol: "Malipot tabi, mahagad tabi nin tamong.",
+                wavFile: "09_blanket.wav", nightPriority: false
+            },
+            {
+                id: 10,
+                labelEnglish: "HELP!", labelTagalog: "TULONG!", labelBikol: "TABANG!",
+                phraseEnglish: "EMERGENCY! I need immediate assistance!",
+                phraseTagalog: "TULONG! Kailangan ko po ng agarang tulong!",
+                phraseBikol: "TABANG! Kaipuhan ko tabi nin tulos na tabang!",
+                wavFile: "10_emergency.wav", nightPriority: true
+            }
+        ];
+
+
+        // Language ids understood by the phone app
+        const LANGUAGE_IDS = ['english', 'filipino', 'bikolano'];
+
+        function getLanguageId() {
+            return LANGUAGE_IDS[currentLangIndex];
+        }
+
+        function getLanguageName() {
+            if (currentLangIndex === 0) return "ENGLISH";
+            if (currentLangIndex === 1) return "TAGALOG";
+            return "BIKOLANO";
+        }
+
+        function getKeyLabel(k) {
+            if (currentLangIndex === 0) return k.labelEnglish;
+            if (currentLangIndex === 1) return k.labelTagalog;
+            return k.labelBikol;
+        }
+
+        function getKeyPhrase(k) {
+            if (currentLangIndex === 0) return k.phraseEnglish;
+            if (currentLangIndex === 1) return k.phraseTagalog;
+            return k.phraseBikol;
+        }
+
+        // =====================================================================
+        // 3D EMBOSSED TACTILE SYMBOLS & TRAPEZOIDAL SQUARE KEYCAP SVG RENDERER
+        // =====================================================================
+        function getTactileIconPaths(id) {
+            switch (id) {
+                case 1: // Water Drop
+                    return `<path d="M 50 25 C 63 41, 60 52, 50 52 C 40 52, 37 41, 50 25 Z" />`;
+                case 2: // Restroom Crossbar & Figures
+                    return `
+                        <circle cx="40" cy="28" r="3.5" />
+                        <line x1="40" y1="34" x2="40" y2="50" />
+                        <line x1="50" y1="25" x2="50" y2="51" />
+                        <circle cx="60" cy="28" r="3.5" />
+                        <line x1="60" y1="34" x2="60" y2="50" />
+                    `;
+                case 3: // Reposition Curved Turn Arrow
+                    return `
+                        <path d="M 36 44 A 14 13 0 1 1 62 34" />
+                        <polyline points="56,30 63,35 55,39" />
+                    `;
+                case 4: // Pain Zigzag Pulse
+                    return `<polyline points="33,40 42,40 47,25 53,51 57,33 67,40" />`;
+                case 5: // Food Bowl
+                    return `
+                        <path d="M 36 36 A 14 11 0 0 0 64 36" />
+                        <line x1="34" y1="36" x2="66" y2="36" />
+                    `;
+                case 6: // Medicine Capsule
+                    return `
+                        <rect x="36" y="32" width="28" height="14" rx="7" />
+                        <line x1="50" y1="32" x2="50" y2="46" />
+                    `;
+                case 7: // Fan Blades
+                    return `
+                        <circle cx="50" cy="39" r="3" />
+                        <ellipse cx="50" cy="30" rx="3" ry="5.5" />
+                        <ellipse cx="41" cy="43" rx="5.5" ry="3" />
+                        <ellipse cx="59" cy="43" rx="5.5" ry="3" />
+                    `;
+                case 8: // Sit Up Chair L-Posture
+                    return `
+                        <polyline points="42,27 42,41 55,41 55,51" />
+                    `;
+                case 9: // Blanket Waves
+                    return `
+                        <path d="M 36 35 Q 43 29, 50 35 T 64 35" />
+                        <path d="M 36 44 Q 43 38, 50 44 T 64 44" />
+                    `;
+                case 10: // Emergency Cross in Circle
+                    return `
+                        <circle cx="50" cy="38" r="13.5" />
+                        <line x1="50" y1="30" x2="50" y2="46" />
+                        <line x1="42" y1="38" x2="58" y2="38" />
+                    `;
+                default:
+                    return '';
+            }
+        }
+
+        function getKeycapPalette(k, idx) {
+            const isGreenPressed = (activeGreenKeyIndex === idx) && !systemErrorState && powerOn;
+            const isNightDimmed = isNightMode && !k.nightPriority && !isGreenPressed && !systemErrorState;
+
+            if (!powerOn) {
+                return {
+                    topFace: "#5F6268", skirtTop: "#6E7176", skirtLeft: "#55585E",
+                    skirtRight: "#484B50", skirtBot: "#3C3F44", stroke: "#2D3034",
+                    ink: "#CBD5E1", hi: "rgba(255,255,255,0.4)"
+                };
+            } else if (systemErrorState) {
+                // STATE 3: All 10 Keycaps Red Error State
+                return {
+                    topFace: "#DA403A", skirtTop: "#EB554E", skirtLeft: "#C3342E",
+                    skirtRight: "#A82A26", skirtBot: "#8E221E", stroke: "#5F1614",
+                    ink: "#FFFFFF", hi: "rgba(255,255,255,0.55)"
+                };
+            } else if (isGreenPressed) {
+                // STATE 2: Pressed Green Keycap State
+                return {
+                    topFace: "#5CB26A", skirtTop: "#73CA80", skirtLeft: "#4E9E5C",
+                    skirtRight: "#40884C", skirtBot: "#34733E", stroke: "#24522C",
+                    ink: "#FFFFFF", hi: "rgba(255,255,255,0.55)"
+                };
+            } else if (isNightDimmed) {
+                // Night Mode Hick's Law Dimmed Keycap (Non-priority at night, still 100% active)
+                return {
+                    topFace: "#84888E", skirtTop: "#92969C", skirtLeft: "#74787E",
+                    skirtRight: "#666A70", skirtBot: "#585C62", stroke: "#3E4146",
+                    ink: "#323842", hi: "rgba(255,255,255,0.65)"
+                };
+            } else {
+                // STATE 1: Clean Matte White Keycaps (Idle Ready)
+                return {
+                    topFace: "#EEF0F3", skirtTop: "#F8FAFC", skirtLeft: "#D8DBE0",
+                    skirtRight: "#C0C4CA", skirtBot: "#A8ACB2", stroke: "#696D73",
+                    ink: "#323842", hi: "rgba(255,255,255,0.88)"
+                };
+            }
+        }
+
+        function renderHardwareBoard() {
+            const grid = document.getElementById('square-keycap-grid');
+            grid.innerHTML = '';
+
+            keys.forEach((k, idx) => {
+                const pal = getKeycapPalette(k, idx);
+                const label = getKeyLabel(k);
+                const iconSvg = getTactileIconPaths(k.id);
+
+                // Generate 1 to 5 tactile braille-like locator dots on top-left of keycap top face
+                const dotCount = Math.min(k.id, 5);
+                let dotsSvg = '';
+                for (let d = 0; d < dotCount; d++) {
+                    const cx = 20 + d * 4.5;
+                    dotsSvg += `<circle cx="${cx}" cy="20" r="1.35" fill="${pal.ink}" />`;
+                }
+
+                const cell = document.createElement('div');
+                cell.className = `keycap-cell ${activeGreenKeyIndex === idx ? 'pressed' : ''}`;
+                cell.id = `keycap-cell-${idx}`;
+
+                // Support both Touch and Mouse Down/Up for immediate physical response on iPads
+                cell.addEventListener('pointerdown', (e) => {
+                    e.preventDefault();
+                    cell.classList.add('pressed');
+                    triggerKeyCapPress(idx);
+                });
+                cell.addEventListener('pointerup', () => {
+                    if (activeGreenKeyIndex !== idx) cell.classList.remove('pressed');
+                });
+                cell.addEventListener('pointerleave', () => {
+                    if (activeGreenKeyIndex !== idx) cell.classList.remove('pressed');
+                });
+
+                cell.innerHTML = `
+                    <!-- Peeking Mechanical Switch Housing Base at bottom -->
+                    <div class="switch-housing-base"></div>
+
+                    <!-- Strictly Square 3D Trapezoidal Sculpted Keycap SVG (100x100 coordinate space) -->
+                    <div class="keycap-3d-wrap">
+                        <svg viewBox="0 0 100 100" class="keycap-svg">
+                            <!-- 4 Slanted 3D Trapezoidal Skirt Faces -->
+                            <!-- Top Skirt -->
+                            <polygon points="2,2 98,2 86,14 14,14" fill="${pal.skirtTop}" stroke="${pal.stroke}" stroke-width="1.1" stroke-linejoin="round" />
+                            <!-- Left Skirt -->
+                            <polygon points="2,2 14,14 14,86 2,98" fill="${pal.skirtLeft}" stroke="${pal.stroke}" stroke-width="1.1" stroke-linejoin="round" />
+                            <!-- Right Skirt -->
+                            <polygon points="86,14 98,2 98,98 86,86" fill="${pal.skirtRight}" stroke="${pal.stroke}" stroke-width="1.1" stroke-linejoin="round" />
+                            <!-- Bottom Skirt -->
+                            <polygon points="14,86 86,86 98,98 2,98" fill="${pal.skirtBot}" stroke="${pal.stroke}" stroke-width="1.1" stroke-linejoin="round" />
+
+                            <!-- Flat Square Top Face (72x72 inside 100x100) -->
+                            <rect x="14" y="14" width="72" height="72" rx="4" fill="${pal.topFace}" stroke="${pal.stroke}" stroke-width="1.1" />
+
+                            <!-- Top-Left Tactile Braille Locator Dots -->
+                            ${dotsSvg}
+
+                            <!-- Raised 3D-Embossed Tactile Symbol (Highlight Relief + Main Ink Pass) -->
+                            <g transform="translate(-0.9, -0.9)" fill="none" stroke="${pal.hi}" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round">
+                                ${iconSvg}
+                            </g>
+                            <g fill="none" stroke="${pal.ink}" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">
+                                ${iconSvg}
+                            </g>
+
+                            <!-- High-Contrast Active Language Label at Bottom of Square Top Face -->
+                            <text x="50" y="79" text-anchor="middle" fill="${pal.ink}" font-family="sans-serif" font-weight="800" font-size="9.5" letter-spacing="0.2">
+                                ${label}
+                            </text>
+                        </svg>
+                    </div>
+                `;
+
+                grid.appendChild(cell);
+            });
+
+            updateBezelBluetoothLed();
+        }
+
+        function updateBezelBluetoothLed() {
+            const led = document.getElementById('bezel-bt-led');
+            if (!led) return;
+            led.className = 'bt-led-dome';
+            if (btConnected) {
+                // Solid Green
+            } else {
+                // Blinking Amber during 5s auto-reconnect
+                if (btReconnectCountdown % 4 < 2) {
+                    led.classList.add('bt-dropped');
+                } else {
+                    led.classList.add('bt-blink-off');
+                }
+            }
+        }
+
+
+        // =====================================================================
+        // LINK TO THE CAREGIVER PHONE
+        // =====================================================================
+        let brokerState = 'connecting';
+        let phoneOnline = false;
+
+        function renderHud() {
+            const hud = document.getElementById('hud');
+            const text = document.getElementById('hud-text');
+            let state = 'offline';
+            let label = 'No connection';
+            if (brokerState === 'connecting') {
+                label = 'Connecting…';
+            } else if (brokerState === 'online') {
+                state = phoneOnline ? 'linked' : 'waiting';
+                label = phoneOnline ? 'Phone linked' : 'Phone offline';
+            }
+            hud.dataset.state = state;
+            text.textContent = label;
+        }
+
+        const link = window.VocalTouchLink
+            ? VocalTouchLink.create({
+                role: 'tablet',
+                onStatus: status => {
+                    brokerState = status;
+                    if (status !== 'online') phoneOnline = false;
+                    renderHud();
+                },
+                onPeerState: state => {
+                    phoneOnline = state.online === true;
+                    renderHud();
+                }
+            })
+            : { sendEvent() {}, setState() {} };
+
+        // The phone shows this status and is notified whenever it changes.
+        function announceBluetooth() {
+            const retrying = !btConnected && btReconnectCountdown > 0;
+            const state = btConnected ? 'connected' : 'disconnected';
+            link.sendEvent('bluetooth', { state, retrying });
+            link.setState({ bluetooth: state, retrying });
+        }
+
+        function sendKeyPressToPhone(k, phrase) {
+            link.sendEvent('key_press', {
+                key: k.id,
+                label: getKeyLabel(k),
+                message: phrase,
+                language: getLanguageId(),
+                timestamp: Date.now(),
+                audioName: k.wavFile
+            });
+        }
+
+        // =====================================================================
+        // INTERACTION & TRIGGER LOGIC
+        // =====================================================================
+        function triggerKeyCapPress(index) {
+            if (!powerOn) return;
+            const now = Date.now();
+            if (now - lastDebounceTime < 260) return;
+            lastDebounceTime = now;
+
+            const k = keys[index];
+
+            if (systemErrorState) {
+                playErrorBuzz();
+                renderHardwareBoard();
+                return;
+            }
+
+            activeGreenKeyIndex = index;
+            pressStartTime = now;
+
+            const phrase = getKeyPhrase(k);
+            playKeyVoiceCadence(k.id);
+            speakPhraseAloud(phrase);
+            // Sent even if the speaker is down, so the caregiver still sees the request.
+            sendKeyPressToPhone(k, phrase);
+
+            renderHardwareBoard();
+        }
+
+        // =====================================================================
+        // DEMO CONTROLS
+        // =====================================================================
+        function toggleDemoPanel() {
+            const panel = document.getElementById('demo-panel');
+            const button = document.getElementById('demo-toggle');
+            const open = panel.classList.toggle('open');
+            button.setAttribute('aria-expanded', String(open));
+        }
+
+        function cycleLanguage() {
+            currentLangIndex = (currentLangIndex + 1) % 3;
+            document.getElementById('ctrl-lang-btn').innerText = `Voice: ${getLanguageName()}`;
+            renderHardwareBoard();
+        }
+
+        function toggleNightMode() {
+            isNightMode = !isNightMode;
+            document.getElementById('ctrl-night-btn').innerText = isNightMode ? "Mode: NIGHT (8PM-3AM)" : "Mode: DAY (7AM-7PM)";
+            renderHardwareBoard();
+        }
+
+        function toggleRedErrorState() {
+            systemErrorState = !systemErrorState;
+            document.getElementById('ctrl-error-btn').innerText = systemErrorState ? "Red Error State: ON" : "Red Error State: OFF";
+            if (systemErrorState) {
+                activeGreenKeyIndex = -1;
+                playErrorBuzz();
+            }
+            renderHardwareBoard();
+        }
+
+        function updateBluetoothButton() {
+            document.getElementById('ctrl-bt-btn').innerText = btConnected ? "BT Speaker: Connected" : "BT Drop (5s Retry...)";
+        }
+
+        function toggleBluetoothLink() {
+            btConnected = !btConnected;
+            btReconnectCountdown = btConnected ? 0 : 50; // 5.0 seconds
+            updateBluetoothButton();
+            updateBezelBluetoothLed();
+            announceBluetooth();
+        }
+
+        function updateVolume(val) {
+            volumePercent = parseInt(val, 10);
+            document.getElementById('vol-label').innerText = `Vol ${volumePercent}%`;
+        }
+
+        function testPressKey6() {
+            if (systemErrorState) toggleRedErrorState();
+            triggerKeyCapPress(5); // Key #6 (MEDICINE / GAMOT / BULONG)
+        }
+
+        // =====================================================================
+        // MASTER 100ms LOOP (key release, Bluetooth auto-reconnect)
+        // =====================================================================
+        function startMasterLoop() {
+            setInterval(() => {
+                const now = Date.now();
+
+                // 1. Release the green pressed keycap after 1.5s
+                if (activeGreenKeyIndex !== -1 && (now - pressStartTime > 1500)) {
+                    activeGreenKeyIndex = -1;
+                    renderHardwareBoard();
+                }
+
+                // 2. Bluetooth 5-second auto-reconnect countdown
+                if (!btConnected && btReconnectCountdown > 0) {
+                    btReconnectCountdown--;
+                    if (btReconnectCountdown === 0) {
+                        btConnected = true;
+                        updateBluetoothButton();
+                        playSyncChime();
+                        announceBluetooth();
+                    }
+                    updateBezelBluetoothLed();
+                }
+            }, 100);
+        }
+
+        // =====================================================================
+        // WEB AUDIO SYNTHESIZER + Web Speech readout (played through the
+        // tablet's output, i.e. the connected Bluetooth speaker)
+        // =====================================================================
+        function ensureAudioCtx() {
+            if (!audioCtx) {
+                const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+                if (AudioContextClass) audioCtx = new AudioContextClass();
+            }
+            if (audioCtx && audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+        }
+
+        function playTone(hz, msecs, delayMs = 0) {
+            if (volumePercent <= 0) return;
+            ensureAudioCtx();
+            if (!audioCtx) return;
+
+            setTimeout(() => {
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(hz, audioCtx.currentTime);
+
+                const peakGain = (volumePercent / 100.0) * 0.25;
+                const durSec = msecs / 1000.0;
+                const now = audioCtx.currentTime;
+
+                gain.gain.setValueAtTime(0.001, now);
+                gain.gain.linearRampToValueAtTime(peakGain, now + 0.015);
+                gain.gain.setValueAtTime(peakGain, now + Math.max(0.02, durSec - 0.025));
+                gain.gain.linearRampToValueAtTime(0.0001, now + durSec);
+
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                osc.start(now);
+                osc.stop(now + durSec);
+            }, delayMs);
+        }
+
+        function playKeyVoiceCadence(keyId) {
+            if (!btConnected || volumePercent <= 0) return;
+            if (keyId === 10) {
+                playTone(880, 150, 0);
+                playTone(660, 150, 160);
+                playTone(880, 200, 320);
+            } else {
+                const f = 370 + (keyId * 38);
+                playTone(f, 120, 0);
+                playTone(f + 85, 170, 150);
+            }
+        }
+
+        function playErrorBuzz() {
+            playTone(185, 140, 0);
+            playTone(155, 200, 190);
+        }
+
+        function playSyncChime() {
+            playTone(523, 80, 0);
+            playTone(659, 110, 90);
+        }
+
+        function speakPhraseAloud(text) {
+            if (!btConnected || volumePercent <= 0) return;
+            if ('speechSynthesis' in window) {
+                window.speechSynthesis.cancel();
+                const utter = new SpeechSynthesisUtterance(text);
+                utter.volume = Math.min(1.0, volumePercent / 100.0);
+                utter.rate = 0.96;
+                utter.lang = (currentLangIndex === 0) ? 'en-US' : 'tl-PH';
+                window.speechSynthesis.speak(utter);
+            }
+        }
+
+
+        // Keyboard shortcuts (keys 1-9 and 0 for key #10)
+        window.addEventListener('keydown', (e) => {
+            if (e.repeat) return;
+            if (e.key >= '1' && e.key <= '9') {
+                triggerKeyCapPress(parseInt(e.key, 10) - 1);
+            } else if (e.key === '0') {
+                triggerKeyCapPress(9);
+            }
+        });
+
+        let show3DModel = false;
+        function toggle3DView() {
+            show3DModel = !show3DModel;
+            const grid = document.getElementById('square-keycap-grid');
+            const viewer = document.getElementById('cad-viewer-container');
+            const btn = document.getElementById('ctrl-3d-btn');
+            if (show3DModel) {
+                grid.style.display = 'none';
+                viewer.style.display = 'block';
+                btn.innerText = "3D CAD Model: ON";
+                btn.style.background = "#581c87";
+                btn.style.color = "#f3e8ff";
+            } else {
+                grid.style.display = 'grid';
+                viewer.style.display = 'none';
+                btn.innerText = "3D CAD Model: OFF";
+                btn.style.background = "#1E2430";
+                btn.style.color = "#E9D5FF";
+            }
+        }
+
+        window.onload = () => {
+            link.setState({ bluetooth: 'connected', retrying: false });
+            renderHud();
+            renderHardwareBoard();
+            startMasterLoop();
+        };
+    </script>
+</body>
+</html>
