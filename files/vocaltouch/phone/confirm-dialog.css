@@ -1,0 +1,89 @@
+.confirm-dialog {
+  width: min(360px, calc(100% - 32px));
+  padding: 22px;
+  border: 1px solid #34415b;
+  border-radius: 12px;
+  background: linear-gradient(145deg, #151e30, #0d1422);
+  color: #dfe7ff;
+  box-shadow: 0 22px 70px #000b;
+}
+
+.confirm-dialog::backdrop {
+  background: #02040bc9;
+  backdrop-filter: blur(3px);
+}
+
+.confirm-dialog form {
+  display: grid;
+  justify-items: center;
+  text-align: center;
+}
+
+.confirm-icon {
+  display: grid;
+  width: 42px;
+  height: 42px;
+  margin-bottom: 12px;
+  place-items: center;
+  border: 1px solid #ef4961;
+  border-radius: 50%;
+  background: #321923;
+  color: #ff7182;
+  font-size: 24px;
+  font-weight: 900;
+}
+
+.confirm-dialog h2 {
+  margin: 0 0 8px;
+  color: #fff;
+  font-size: 18px;
+}
+
+.confirm-dialog p {
+  margin: 0;
+  color: #aebbd0;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.confirm-actions {
+  display: grid;
+  width: 100%;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-top: 22px;
+}
+
+.confirm-actions button {
+  min-height: 40px;
+  border-radius: 7px;
+  font: inherit;
+  font-size: 12px;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.confirm-cancel {
+  border: 1px solid #3c4b65;
+  background: #1a2435;
+  color: #d8e2f2;
+}
+
+.confirm-cancel:hover {
+  background: #25334a;
+}
+
+.confirm-delete {
+  border: 1px solid #ef4961;
+  background: #c92f49;
+  color: #fff;
+}
+
+.confirm-delete:hover {
+  background: #e13a55;
+}
+
+.confirm-actions button:focus-visible {
+  outline: 2px solid #65c7ff;
+  outline-offset: 2px;
+}

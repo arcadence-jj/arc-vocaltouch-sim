@@ -1,0 +1,349 @@
+.console {
+  display: flex;
+  width: min(528px, calc(100% - 48px));
+  height: 100dvh;
+  min-height: 0;
+  flex-direction: column;
+  padding: max(30px, env(safe-area-inset-top)) 0 max(30px, env(safe-area-inset-bottom));
+}
+
+header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding-top: 20px;
+  padding-bottom: 12px;
+}
+
+header h1 {
+  font-size: 27px;
+  letter-spacing: 0.2px;
+}
+
+.settings-button {
+  display: inline-flex;
+  min-height: 38px;
+  flex: 0 0 auto;
+  align-items: center;
+  gap: 7px;
+  padding: 0 11px;
+  border: 1px solid #34415b;
+  border-radius: 8px;
+  background: linear-gradient(145deg, #1a2840, #121b2c);
+  color: #cfe2ff;
+  font: inherit;
+  font-size: 12px;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.settings-button span:first-child {
+  color: #69caff;
+  font-size: 17px;
+}
+
+.settings-button:hover {
+  border-color: #4a9cff;
+  background: #1d2c44;
+}
+
+.settings-dialog {
+  width: min(440px, calc(100% - 28px));
+  max-width: none;
+  padding: 22px;
+  border: 1px solid #34415b;
+  border-radius: 14px;
+  background: linear-gradient(150deg, #172238, #0d1422 75%);
+  color: #dfe7ff;
+  box-shadow: 0 24px 80px #000c;
+}
+
+.settings-dialog::backdrop {
+  background: #02040bc9;
+  backdrop-filter: blur(4px);
+}
+
+.settings-dialog form {
+  display: grid;
+  gap: 10px;
+}
+
+.settings-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 5px;
+}
+
+.settings-kicker {
+  color: #70a6d9;
+  font-size: 9px;
+  font-weight: 900;
+  letter-spacing: 1.4px;
+}
+
+.settings-heading h2 {
+  margin: 3px 0 0;
+  color: #fff;
+  font-size: 23px;
+}
+
+.settings-close {
+  width: 34px;
+  height: 34px;
+  border: 1px solid #34415b;
+  border-radius: 8px;
+  background: #182237;
+  color: #c8d6eb;
+  font-size: 23px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.setting-item {
+  display: flex;
+  min-height: 68px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px;
+  border: 1px solid #293750;
+  border-radius: 9px;
+  background: #111a2a;
+}
+
+.setting-copy {
+  display: grid;
+  gap: 5px;
+}
+
+.setting-copy strong {
+  color: #f0f5ff;
+  font-size: 13px;
+}
+
+.setting-copy small {
+  color: #91a5bd;
+  font-size: 11px;
+  line-height: 1.35;
+}
+
+.setting-action {
+  min-height: 36px;
+  flex: 0 0 auto;
+  padding: 0 10px;
+  border: 1px solid #327cff;
+  border-radius: 7px;
+  background: #15243a;
+  color: #74bdff;
+  font-size: 10px;
+  font-weight: 900;
+  cursor: pointer;
+}
+
+.bluetooth-setting {
+  border-color: #08bc73;
+  color: #42dfa5;
+}
+
+.volume-setting {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 10px;
+}
+
+.volume-setting input {
+  width: 100%;
+  margin: 0;
+  accent-color: #00d99b;
+}
+
+.volume-setting #volumeValue {
+  color: #43dfac;
+}
+
+.settings-dialog button:focus-visible,
+.settings-button:focus-visible,
+.volume-setting input:focus-visible {
+  outline: 2px solid #65c7ff;
+  outline-offset: 3px;
+}
+
+.live-status > div:last-child {
+  min-width: 0;
+  flex: 1;
+}
+
+.live-status #voiceNotice {
+  display: block;
+  margin-top: 5px;
+  color: #91a5bd;
+  font-size: 10px;
+  font-weight: 600;
+  line-height: 1.25;
+}
+
+.live-status #voiceNotice:empty {
+  display: none;
+}
+
+.live-status #voiceNotice.unavailable {
+  color: #ffb91c;
+}
+
+.dashboard {
+  height: auto;
+  min-height: 0;
+  max-height: none;
+  flex: 1 1 0;
+}
+
+.dashboard:has(.empty-state),
+.dashboard:has(.empty-state):not(:has(.history-toolbar)) {
+  display: flex;
+  align-items: stretch;
+  justify-content: flex-start;
+  padding: 10px;
+  background: #111720;
+}
+
+.dashboard:has(.empty-state) .empty-state {
+  display: grid;
+  flex: 1;
+  align-content: center;
+  justify-items: center;
+  padding: 18px 10px;
+}
+
+.error-notification {
+  position: sticky;
+  bottom: 0;
+  z-index: 1;
+  display: flex;
+  min-height: 48px;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  margin-top: auto;
+  padding: 8px 12px;
+  border: 1px solid #ee214c;
+  border-radius: 6px;
+  background: #241722;
+  color: #ff405f;
+  font-size: 14px;
+  font-weight: 900;
+  line-height: 1.4;
+  box-shadow: 0 0 14px #ff264922;
+}
+
+@media (max-width: 560px) {
+  .dashboard {
+    height: auto;
+    min-height: 0;
+    max-height: none;
+    flex-basis: 0;
+  }
+
+  .settings-dialog {
+    padding: 17px;
+  }
+
+  .setting-item {
+    padding: 10px;
+  }
+
+  .setting-action {
+    max-width: 145px;
+    white-space: normal;
+  }
+}
+
+@media (max-height: 620px) {
+  .console {
+    padding-top: max(24px, env(safe-area-inset-top));
+    padding-bottom: max(24px, env(safe-area-inset-bottom));
+  }
+
+  header {
+    padding-top: 8px;
+    padding-bottom: 7px;
+  }
+
+  .tabs {
+    margin: 8px 0 7px;
+  }
+
+  .tab {
+    height: 36px;
+  }
+
+  .live-status {
+    height: 70px;
+    flex: 0 0 70px;
+    padding: 8px 12px;
+  }
+
+  .live-status strong {
+    margin-bottom: 5px;
+    font-size: 12px;
+  }
+
+  .live-status span {
+    font-size: 12px;
+  }
+}
+
+/* ---- Tablet link + Bluetooth status (driven by the tablet) ---- */
+.link-status {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 5px 0 0;
+  color: #91a5bd;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.link-status::before {
+  content: '';
+  width: 8px;
+  height: 8px;
+  flex: 0 0 auto;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+.link-status[data-state="online"] { color: #30d899; }
+.link-status[data-state="waiting"] { color: #ffb91c; }
+.link-status[data-state="offline"] { color: #ff6877; }
+
+.bluetooth-setting {
+  display: inline-flex;
+  align-items: center;
+  text-align: center;
+  cursor: default;
+}
+
+.bluetooth-setting[data-state="reconnecting"] {
+  border-color: #f2a60d;
+  color: #ffc13d;
+}
+
+.bluetooth-setting[data-state="disconnected"] {
+  border-color: #ef254a;
+  color: #ff536a;
+}
+
+.bluetooth-setting[data-state="unknown"] {
+  border-color: #3c4b65;
+  color: #91a5bd;
+}
+
+.error-notification.success-notification {
+  border-color: #08bc73;
+  background: #10231d;
+  color: #30d899;
+  box-shadow: 0 0 14px #19cf7a22;
+}
